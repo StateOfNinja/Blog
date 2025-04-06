@@ -17,7 +17,13 @@ export default function SignUp() {
 
   const [registerUser, { isLoading }] = useRegisterUserMutation();
 
-  const [serverError, setSereverError] = useState();
+  type ServerError = {
+    username?: string[];
+    email?: string[];
+    password?: string[];
+  };
+
+  const [serverError, setSereverError] = useState<ServerError | null>(null);
 
   function onSubmit(data) {
     registerUser(data)

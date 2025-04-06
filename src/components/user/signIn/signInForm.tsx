@@ -1,7 +1,6 @@
 import { Button } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
 
 import { useLoginUserMutation } from '../../../store/slice/apiSlice';
 
@@ -10,15 +9,13 @@ import '../signForm.css';
 export default function SignIn() {
   const navigate = useNavigate();
 
-  const [loginUser, { isLoading }] = useLoginUserMutation();
+  const [loginUser] = useLoginUserMutation();
 
   const {
     register,
     formState: { errors },
     handleSubmit,
   } = useForm();
-
-  const [serverError, setServerError] = useState();
 
   function onSubmit(data) {
     loginUser(data)
@@ -29,7 +26,6 @@ export default function SignIn() {
       })
       .catch((error) => {
         console.log(error);
-        setServerError(error.data.errors);
       });
   }
 
