@@ -4,20 +4,16 @@ import { useSelector } from 'react-redux';
 import './header.css';
 
 export default function Header() {
-  const user = useSelector((state) => state);
-
-  console.log(user);
-
-  const headerAuthorization = (
-    <div className="auth-links">
-      <Link to={'/sign-in'}>
-        <div className="link-btn link-btn--black auth-links__link">Sign In</div>
-      </Link>
-      <Link to={'/sign-up'}>
-        <div className="link-btn link-btn--green auth-links__link link-login">Sign Up</div>
-      </Link>
-    </div>
-  );
+  // const headerAuthorization = (
+  //   <div className="auth-links">
+  //     <Link to={'/sign-in'}>
+  //       <div className="link-btn link-btn--black auth-links__link">Sign In</div>
+  //     </Link>
+  //     <Link to={'/sign-up'}>
+  //       <div className="link-btn link-btn--green auth-links__link link-login">Sign Up</div>
+  //     </Link>
+  //   </div>
+  // );
 
   const headerProfile = (
     <div className="profile">
