@@ -6,8 +6,6 @@ import ArticlePage from '../article/articlePage/articlePage';
 import SignIn from '../user/signIn/signInForm';
 import SignUp from '../user/signUp/signUpForm';
 
-import './app.css';
-
 export default function App() {
   return (
     <Routes>
