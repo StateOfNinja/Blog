@@ -1,39 +1,44 @@
-import { Button } from 'antd';
-import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { Button } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 
-import { TSignError, ISignUpData } from '../../../store/types-and-interfaces/sign';
+import { IEditProfile, TSignError } from '../../../store/types-and-interfaces/sign';
+import { useEditProfileMutation } from '../../../store/slice/apiSlice';
 import { setUser } from '../../../store/slice/userSlice';
-import { useRegisterUserMutation } from '../../../store/slice/apiSlice';
 import styles from '../../../style/form.module.css';
 
-export default function SignUp() {
+export default function EditProfileForm() {
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+    setError,
+  } = useForm<IEditProfile>();
+
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
 
-  const {
-    register,
-    getValues,
-    formState: { errors },
-    handleSubmit,
-    setError,
-  } = useForm<ISignUpData>();
+  const [editProfileForm, { isLoading }] = useEditProfileMutation();
 
-  const [registerUser, { isLoading }] = useRegisterUserMutation();
+  const user = useSelector((state) => state.user.user);
 
-  async function onSubmit(data: ISignUpData) {
+  const token = JSON.parse(localStorage.getItem('user')).token;
+
+  async function onSubmit(data: IEditProfile) {
     try {
-      const response = await registerUser(data).unwrap();
-      localStorage.setItem('user', JSON.stringify(response.user));
+      const response = await editProfileForm({ data, token }).unwrap();
       dispatch(
         setUser({
           username: response.user.username,
           email: response.user.email,
           token: response.user.token,
+          image: response.user.image,
+          password: response.user.password,
         })
       );
+      localStorage.setItem('user', JSON.stringify(response.user));
       navigate('/articles');
     } catch (err: unknown) {
       const error = err as TSignError;
@@ -53,8 +58,8 @@ export default function SignUp() {
 
   return (
     <div className={styles.pageForm}>
-      <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
-        <h1 className={styles.formTitle}>Create new account</h1>
+      <form className={`${styles.form}`} onSubmit={handleSubmit(onSubmit)}>
+        <h1 className={styles.formTitle}>Edit Profile</h1>
         <ul className={styles.formGroup}>
           <li className={styles.formGroupItem}>
             <label htmlFor="username" className={styles.label}>
@@ -66,6 +71,7 @@ export default function SignUp() {
               className={`${styles.input} ${errors.username ? styles.inputError : ''}`}
               placeholder="User name"
               autoFocus
+              defaultValue={user?.username}
               {...register('username', {
                 required: 'Поле обязательно для заполнения',
                 minLength: {
@@ -88,8 +94,9 @@ export default function SignUp() {
             <input
               type="email"
               id="email"
-              className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
+              className={styles.input}
               placeholder="Email address"
+              defaultValue={user?.email}
               {...register('email', {
                 required: 'Поле обязательно для заполнения',
                 pattern: {
@@ -103,13 +110,13 @@ export default function SignUp() {
 
           <li className={styles.formGroupItem}>
             <label htmlFor="password" className={styles.label}>
-              Password
+              New password
             </label>
             <input
               type="password"
               id="password"
               className={`${styles.input} ${errors.password ? styles.inputError : ''}`}
-              placeholder="Password"
+              placeholder="New password"
               {...register('password', {
                 required: 'Поле обязательно для заполнения',
                 minLength: {
@@ -126,48 +133,28 @@ export default function SignUp() {
           </li>
 
           <li className={styles.formGroupItem}>
-            <label htmlFor="repeatPassword" className={styles.label}>
-              Repeat Password
+            <label htmlFor="avatarImage" className={styles.label}>
+              Avatar image (url)
             </label>
             <input
-              type="password"
-              id="repeatPassword"
-              className={`${styles.input} ${errors.repeatPassword ? styles.inputError : ''}`}
-              placeholder="Repeat Password"
-              {...register('repeatPassword', {
-                required: 'Поле обязательно для заполнения',
-                validate: (value) => {
-                  const { password } = getValues();
-                  return password === value || 'Пароль не совпадает';
+              type="text"
+              id="avatarImage"
+              className={`${styles.input} ${errors.avatarImage ? styles.inputError : ''}`}
+              placeholder="Avatar Image"
+              defaultValue={user?.image}
+              {...register('image', {
+                pattern: {
+                  value: /^https?:\/\/(?:[\w-]+\.)+[a-z]{2,}(\/\S*)?$/i,
+                  message: 'Не корректные данные',
                 },
               })}
             />
-            {errors.repeatPassword && <span className={styles.error}>{String(errors.repeatPassword.message)}</span>}
+            {errors.image && <span className={styles.error}>{String(errors.image.message)}</span>}
           </li>
         </ul>
-        <label htmlFor="agreement" className={styles.agreement}>
-          <input
-            type="checkbox"
-            id="agreement"
-            className={`${styles.agreementCheckbox} ${errors.agreement ? styles.inputError : ''}`}
-            {...register('agreement', {
-              required: 'Поле обязательно для заполнения',
-            })}
-          />
-          <span>I agree to the processing of my personal information</span>
-        </label>
-        {errors.agreement && <span className={styles.error}>{String(errors.agreement.message)}</span>}
-
         <Button type="primary" htmlType="submit" className={`${styles.formBtn} ${isLoading ? styles.disabled : ''}`}>
-          Create
+          Save
         </Button>
-
-        <p className={styles.formSwitch}>
-          Already have an account?{' '}
-          <Link to="/sign-in">
-            <span className={styles.formSwitchLink}>Sign In.</span>
-          </Link>
-        </p>
       </form>
     </div>
   );

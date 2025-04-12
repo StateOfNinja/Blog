@@ -5,6 +5,8 @@ import ArticlesList from '../articlesList/articlesList';
 import ArticlePage from '../article/articlePage/articlePage';
 import SignIn from '../user/signIn/signInForm';
 import SignUp from '../user/signUp/signUpForm';
+import EditProfileForm from '../user/profile/editProfileForm';
+import CreateArticleForm from '../article/createArticle/createArticleForm';
 
 export default function App() {
   return (
@@ -15,6 +17,9 @@ export default function App() {
         <Route path="articles/:slug" element={<ArticlePage />} />
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/profile" element={<EditProfileForm />}></Route>
+        <Route path="/new-article" element={<CreateArticleForm />}></Route>
+        <Route path="/articles/:slug/edit" element={<CreateArticleForm />}></Route>
       </Route>
     </Routes>
   );

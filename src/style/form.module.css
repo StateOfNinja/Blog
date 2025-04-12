@@ -1,4 +1,4 @@
-.page-form {
+.pageForm {
   padding-top: 60px;
   font-family: 'Roboto', sans-serif;
 }
@@ -14,7 +14,7 @@
   border-radius: 10px;
 }
 
-.form-title {
+.formTitle {
   color: #262626;
   font-size: 20px;
   line-height: 28px;
@@ -22,13 +22,13 @@
   text-align: center;
 }
 
-.form-group {
+.formGroup {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.form-group-item {
+.formGroupItem {
   display: flex;
   flex-direction: column;
 }
@@ -57,25 +57,25 @@
   cursor: pointer;
 }
 
-.agreement-checkbox {
+.agreementCheckbox {
   margin-right: 5px;
   width: 16px;
   height: 16px;
 }
 
-.form-btn {
+.formBtnSubmit {
   width: 100%;
   height: 40px;
 }
 
-.form-switch {
+.formSwitch {
   text-align: center;
   font-size: 12px;
   line-height: 20px;
   color: #8c8c8c;
 }
 
-.form-switch__link {
+.formSwitchLink {
   color: #1890ff;
 }
 
@@ -84,6 +84,35 @@
   font-size: 12px;
 }
 
-.input-error {
+.inputError {
   border: 1px solid red;
+}
+
+.formEdit {
+  width: 938px;
+}
+
+.inputTextarea {
+  min-height: 179px;
+  max-width: 874px;
+}
+
+.tagsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.tagContainer {
+  display: flex;
+  gap: 17px;
+}
+
+.formBtn {
+  height: 40px;
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.5;
 }

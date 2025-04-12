@@ -1,15 +1,45 @@
 import { HeartOutlined, HeartFilled } from '@ant-design/icons';
+import { Button, Popconfirm } from 'antd';
 import { format } from 'date-fns';
-import { Link } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import ReactMarkdown from 'react-markdown';
 
-import './articleForm.css';
+import { deleteArticle } from '../../../store/slice/articleSlice';
+import { useDeleteArticleMutation, useToggleFavoriteArticleMutation } from '../../../store/slice/apiSlice';
+
+import styles from './articleForm.module.css';
 
 export default function ArticleForm(article) {
   const { title, slug, favoritesCount, description, favorited, createdAt, tagList, author, body } = article.article;
 
+  const [deleteArticleApi] = useDeleteArticleMutation();
+
+  const [toggleFavoriteArticle] = useToggleFavoriteArticleMutation();
+
+  const navigate = useNavigate();
+
+  const dispatch = useDispatch();
+
+  const token = JSON.parse(localStorage.getItem('user'))?.token;
+
+  function handleDeleteArticle() {
+    deleteArticleApi({ slug, token })
+      .unwrap()
+      .then(() => {
+        dispatch(deleteArticle(slug));
+        navigate('/articles');
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }
+
   const userName = author.username;
+
+  const user = useSelector((state) => state.user.user?.username);
+
+  const isAuthor = user === userName;
 
   const userAvatar = author.image;
 
@@ -18,35 +48,70 @@ export default function ArticleForm(article) {
   const location = useLocation();
   const isArticlePage = location.pathname.includes('/articles/');
 
-  return (
-    <div className={`article ${isArticlePage ? 'article-page ' : ''}`}>
-      <div className="article__wrapper">
-        <div className="article__content">
-          <div className="article__content-title">
-            {isArticlePage ? title : <Link to={`/articles/${slug}`}>{title}</Link>}
+  async function toggleFavorite() {
+    try {
+      await toggleFavoriteArticle({ slug, token, favorite: favorited }).unwrap();
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
-            <button className="favorites">
+  return (
+    <div className={`${styles.article} ${isArticlePage ? styles.full : ''}`}>
+      <div className={styles.wrapper}>
+        <div className={styles.content}>
+          <div className={styles.title}>
+            {isArticlePage ? title : <Link to={`/articles/${slug}`}>{title}</Link>}
+            <button className={styles.favorites} onClick={toggleFavorite}>
               <span>{favorited ? <HeartFilled /> : <HeartOutlined />}</span>
-              <span className="favorites-number">{favoritesCount}</span>
+              <span className={styles.favoritesNumber}>{favoritesCount}</span>
             </button>
           </div>
-
-          <ul className="article__content-tags">
-            {tagList.map((tag) => tag && <li className="article__content-tag">{tag}</li>)}
+          <ul className={styles.tags}>
+            {tagList.map(
+              (tag, key) =>
+                tag && (
+                  <li key={key} className={styles.tag}>
+                    {tag}
+                  </li>
+                )
+            )}
           </ul>
-          <div className="article__content-description">{description}</div>
+          <div className={styles.description}>{description}</div>
         </div>
 
-        <div className="article__info-wrapper">
-          <div className="article__info">
-            <span className="article__info-name">{userName}</span>
-            <span className="article__info-date">{convertedDate}</span>
+        <div className={styles.info}>
+          <div className={styles.infoContainer}>
+            <div className={styles.author}>
+              <span className={styles.name}>{userName}</span>
+              <span className={styles.date}>{convertedDate}</span>
+            </div>
+            <img src={userAvatar} alt="avatar" className={styles.avatar} />
           </div>
-          <img src={userAvatar} alt="avatar" className="avatar" />
+          {isArticlePage && isAuthor && (
+            <div className={styles.controls}>
+              <Popconfirm
+                placement="right"
+                title="Действительно хотите далить статью ?"
+                okText="Да"
+                cancelText="Нет"
+                onConfirm={handleDeleteArticle}
+              >
+                <Button danger className="link-btn link-btn--delete">
+                  Delete
+                </Button>
+              </Popconfirm>
+              <Link to={`/articles/${slug}/edit`}>
+                <Button color="green" variant="outlined" className="link-btn link-btn--edit">
+                  Edit
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
       </div>
       {isArticlePage && (
-        <div className="markdown-body">
+        <div className={styles.markdown}>
           <ReactMarkdown>{body}</ReactMarkdown>
         </div>
       )}

@@ -1,40 +1,72 @@
 import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Button } from 'antd';
 
-import './header.css';
+import { logOut, getUser } from '../../store/slice/userSlice';
+
+import styles from './header.module.css';
 
 export default function Header() {
+  const user = useSelector((state) => state.user.user);
+
+  const avatar = user?.image ? user.image : 'https://static.productionready.io/images/smiley-cyrus.jpg';
+
+  const dispatch = useDispatch();
+
+  function clickLogOut() {
+    dispatch(logOut());
+  }
+
+  useEffect(() => {
+    dispatch(getUser());
+  }, []);
+
   const headerAuthorization = (
-    <div className="auth-links">
-      <Link to={'/sign-in'}>
-        <div className="link-btn link-btn--black auth-links__link">Sign In</div>
+    <div className={styles.authLinks}>
+      <Link to="/sign-in">
+        <Button color="default" variant="outlined" className={`${styles.linkBtn} ${styles.createArticle}`}>
+          Sign In
+        </Button>
       </Link>
-      <Link to={'/sign-up'}>
-        <div className="link-btn link-btn--green auth-links__link link-login">Sign Up</div>
+      <Link to="/sign-up">
+        <Button color="green" variant="outlined" className={`${styles.linkBtn} ${styles.createArticle}`}>
+          Sign Up
+        </Button>
       </Link>
     </div>
   );
 
-  // const headerProfile = (
-  //   <div className="profile">
-  //     <Link to={'/new-article'}>
-  //       <div className="link-btn link-btn--green create-article">Create article</div>
-  //     </Link>
-  //     <Link to={'/profile'} className="profile-info">
-  //       <div className="profile-info__name">123</div>
-  //       <div className="profile-info__avatar">qwe</div>
-  //     </Link>
-  //     <Link to={'/articles'}>
-  //       <div className="link-btn link-btn--black log-out">Log Out</div>
-  //     </Link>
-  //   </div>
-  // );
+  const headerProfile = (
+    <div className={styles.profile}>
+      <Link to="/new-article">
+        <Button color="green" variant="outlined" className={`${styles.linkBtn} ${styles.createArticle}`}>
+          Create article
+        </Button>
+      </Link>
+      <Link to="/profile" className={styles.profileInfo}>
+        <div className={styles.profileInfoName}>{user?.username}</div>
+        <img src={avatar} alt="user avatar" className={styles.avatar} />
+      </Link>
+      <Link to="/articles">
+        <Button
+          color="default"
+          variant="outlined"
+          className={`${styles.linkBtn} ${styles.linkBtnBlack} ${styles.logOut}`}
+          onClick={clickLogOut}
+        >
+          Log Out
+        </Button>
+      </Link>
+    </div>
+  );
 
   return (
-    <header className="header">
-      <Link to={'/articles'}>
-        <div className="header__title">Realworld Blog</div>
+    <header className={styles.header}>
+      <Link to="/articles">
+        <div className={styles.title}>Realworld Blog</div>
       </Link>
-      {headerAuthorization}
+      {user ? headerProfile : headerAuthorization}
     </header>
   );
 }

@@ -1,6 +1,6 @@
 .article {
   margin: 0 auto;
-  background-color: #ffff;
+  background-color: #fff;
   display: flex;
   flex-direction: column;
   width: 940px;
@@ -8,19 +8,19 @@
   padding: 15px 20px;
 }
 
-.article__wrapper {
+.wrapper {
   display: flex;
   justify-content: space-between;
 }
 
-.article__content {
+.content {
   display: flex;
   flex-direction: column;
   gap: 6px;
   max-width: 682px;
 }
 
-.article__content-title {
+.title {
   color: #1890ff;
   font-size: 20px;
   line-height: 28px;
@@ -32,14 +32,19 @@
 .favorites {
   display: flex;
   gap: 5px;
+  cursor: pointer;
 }
 
-.article__content-tags {
+.favoritesNumber {
+  font-size: 14px;
+}
+
+.tags {
   display: flex;
   gap: 8px;
 }
 
-.article__content-tag {
+.tag {
   color: #00000080;
   padding: 2px;
   font-size: 12px;
@@ -47,31 +52,41 @@
   border-radius: 2px;
 }
 
-.article__content-description {
+.description {
+  color: rgba(0, 0, 0, 0.5);
   font-size: 12px;
   line-height: 22px;
+  word-break: break-word;
 }
 
-.article__info-wrapper {
+.info {
   display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.infoContainer {
+  display: flex;
+  align-self: flex-end;
   gap: 12px;
 }
 
-.article__info {
+.author {
   display: flex;
   flex-direction: column;
 }
 
-.article__info-name {
+.name {
   text-align: end;
   font-size: 18px;
   line-height: 28px;
 }
 
-.article__info-date {
+.date {
   color: rgba(0, 0, 0, 0.5);
   font-size: 12px;
   line-height: 22px;
+  text-align: end;
 }
 
 .avatar {
@@ -79,14 +94,19 @@
   height: 46px;
 }
 
-.article-page {
+.full {
   height: fit-content;
   padding: 20px;
 }
 
-.markdown-body * {
+.markdown {
   all: revert;
   color: rgba(0, 0, 0, 0.75);
   word-wrap: break-word;
   max-width: 650px;
+}
+
+.controls {
+  display: flex;
+  gap: 12px;
 }
