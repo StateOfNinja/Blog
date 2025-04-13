@@ -43,12 +43,12 @@ const apiSlice = createApi({
         method: 'POST',
         body: { user: data },
       }),
+      invalidatesTags: ['Article', 'Articles'],
     }),
     editProfile: builder.mutation({
       query: ({ data }) => ({
         url: '/user',
         method: 'PUT',
-
         body: { user: data },
       }),
     }),
