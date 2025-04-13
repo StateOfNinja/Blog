@@ -3,14 +3,16 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from 'antd';
 
+import { IProfileData } from '../../store/types-and-interfaces/profile';
 import { logOut, getUser } from '../../store/slice/userSlice';
+import { RootState } from '../../store/store';
 
 import styles from './header.module.css';
 
 export default function Header() {
-  const user = useSelector((state) => state.user.user);
+  const user: IProfileData = useSelector((state: RootState) => state.user.user);
 
-  const avatar = user?.image ? user.image : 'https://static.productionready.io/images/smiley-cyrus.jpg';
+  const avatar: string = user?.image ? user.image : 'https://static.productionready.io/images/smiley-cyrus.jpg';
 
   const dispatch = useDispatch();
 

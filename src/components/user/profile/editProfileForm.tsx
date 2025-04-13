@@ -2,8 +2,12 @@ import { useForm } from 'react-hook-form';
 import { Button } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
+import { useEffect } from 'react';
 
-import { IEditProfile, TSignError } from '../../../store/types-and-interfaces/sign';
+import { token } from '../../../store/token';
+import { RootState } from '../../../store/store';
+import { TError } from '../../../store/types-and-interfaces/error';
+import { IProfileData, IProfileResponse } from '../../../store/types-and-interfaces/profile';
 import { useEditProfileMutation } from '../../../store/slice/apiSlice';
 import { setUser } from '../../../store/slice/userSlice';
 import styles from '../../../style/form.module.css';
@@ -14,7 +18,8 @@ export default function EditProfileForm() {
     formState: { errors },
     handleSubmit,
     setError,
-  } = useForm<IEditProfile>();
+    reset,
+  } = useForm<IProfileData>();
 
   const navigate = useNavigate();
 
@@ -22,26 +27,26 @@ export default function EditProfileForm() {
 
   const [editProfileForm, { isLoading }] = useEditProfileMutation();
 
-  const user = useSelector((state) => state.user.user);
+  const user = useSelector((state: RootState) => state.user.user);
 
-  const token = JSON.parse(localStorage.getItem('user')).token;
-
-  async function onSubmit(data: IEditProfile) {
+  async function onSubmit(data: IProfileData) {
     try {
-      const response = await editProfileForm({ data, token }).unwrap();
+      const response: IProfileResponse = await editProfileForm({ data, token }).unwrap();
+
+      const { username, email, image } = response.user;
+
       dispatch(
         setUser({
-          username: response.user.username,
-          email: response.user.email,
-          token: response.user.token,
-          image: response.user.image,
-          password: response.user.password,
+          username: username,
+          email: email,
+          token: token,
+          image: image,
         })
       );
       localStorage.setItem('user', JSON.stringify(response.user));
       navigate('/articles');
     } catch (err: unknown) {
-      const error = err as TSignError;
+      const error = err as TError;
       if (error.data.errors['username']) {
         setError('username', {
           type: 'serverError',
@@ -55,6 +60,17 @@ export default function EditProfileForm() {
       }
     }
   }
+
+  useEffect(() => {
+    if (user) {
+      const { username, email, image } = user;
+      reset({
+        username: username,
+        email: email,
+        image: image,
+      });
+    }
+  }, [user]);
 
   return (
     <div className={styles.pageForm}>
@@ -71,7 +87,6 @@ export default function EditProfileForm() {
               className={`${styles.input} ${errors.username ? styles.inputError : ''}`}
               placeholder="User name"
               autoFocus
-              defaultValue={user?.username}
               {...register('username', {
                 required: 'Поле обязательно для заполнения',
                 minLength: {
@@ -96,7 +111,6 @@ export default function EditProfileForm() {
               id="email"
               className={styles.input}
               placeholder="Email address"
-              defaultValue={user?.email}
               {...register('email', {
                 required: 'Поле обязательно для заполнения',
                 pattern: {
@@ -139,9 +153,8 @@ export default function EditProfileForm() {
             <input
               type="text"
               id="avatarImage"
-              className={`${styles.input} ${errors.avatarImage ? styles.inputError : ''}`}
+              className={`${styles.input} ${errors.image ? styles.inputError : ''}`}
               placeholder="Avatar Image"
-              defaultValue={user?.image}
               {...register('image', {
                 pattern: {
                   value: /^https?:\/\/(?:[\w-]+\.)+[a-z]{2,}(\/\S*)?$/i,

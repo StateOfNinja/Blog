@@ -5,12 +5,15 @@ import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import ReactMarkdown from 'react-markdown';
 
+import { token } from '../../../store/token';
+import { RootState } from '../../../store/store';
+import { IDataResponse } from '../../../store/types-and-interfaces/article';
 import { deleteArticle } from '../../../store/slice/articleSlice';
 import { useDeleteArticleMutation, useToggleFavoriteArticleMutation } from '../../../store/slice/apiSlice';
 
 import styles from './articleForm.module.css';
 
-export default function ArticleForm(article) {
+export default function ArticleForm(article: IDataResponse) {
   const { title, slug, favoritesCount, description, favorited, createdAt, tagList, author, body } = article.article;
 
   const [deleteArticleApi] = useDeleteArticleMutation();
@@ -20,8 +23,6 @@ export default function ArticleForm(article) {
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
-
-  const token = JSON.parse(localStorage.getItem('user'))?.token;
 
   function handleDeleteArticle() {
     deleteArticleApi({ slug, token })
@@ -35,11 +36,11 @@ export default function ArticleForm(article) {
       });
   }
 
-  const userName = author.username;
+  const user = useSelector((state: RootState) => state.user.user);
 
-  const user = useSelector((state) => state.user.user?.username);
+  const authorName = author.username;
 
-  const isAuthor = user === userName;
+  const isAuthor = user ? user.username === authorName : false;
 
   const userAvatar = author.image;
 
@@ -79,11 +80,10 @@ export default function ArticleForm(article) {
           </ul>
           <div className={styles.description}>{description}</div>
         </div>
-
         <div className={styles.info}>
           <div className={styles.infoContainer}>
             <div className={styles.author}>
-              <span className={styles.name}>{userName}</span>
+              <span className={styles.name}>{authorName}</span>
               <span className={styles.date}>{convertedDate}</span>
             </div>
             <img src={userAvatar} alt="avatar" className={styles.avatar} />

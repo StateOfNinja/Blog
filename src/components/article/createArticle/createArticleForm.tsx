@@ -3,6 +3,8 @@ import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
+import { token } from '../../../store/token';
+import { ICreatForm, IArticle } from '../../../store/types-and-interfaces/article';
 import { useCreateArticleMutation, useEditArticleMutation, useGetArticleQuery } from '../../../store/slice/apiSlice';
 import styles from '../../../style/form.module.css';
 
@@ -12,14 +14,14 @@ export default function CreateArticleForm() {
     formState: { errors },
     handleSubmit,
     reset,
-  } = useForm();
+  } = useForm<IArticle>();
 
   const navigate = useNavigate();
 
   const [tags, setTags] = useState<string[]>(['']);
 
-  function changeTag(e: string, index: number) {
-    const newValue = e.target.value.trim();
+  function changeTag(e: React.ChangeEvent<HTMLInputElement>, index: number) {
+    const newValue: string = e.target.value.trim();
     const updatedTags = [...tags];
     updatedTags[index] = newValue;
     setTags(updatedTags);
@@ -40,9 +42,7 @@ export default function CreateArticleForm() {
 
   const { slug } = useParams();
 
-  const token = JSON.parse(localStorage.getItem('user'))?.token;
-
-  async function onSubmit(formData) {
+  async function onSubmit(formData: ICreatForm) {
     const tagsList = tags.filter((tag) => tag !== '');
 
     const data = {
