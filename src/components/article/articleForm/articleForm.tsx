@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import ReactMarkdown from 'react-markdown';
 
 import { token } from '../../../store/token';
+import { IProfileData } from '../../../store/types-and-interfaces/profile';
 import { RootState } from '../../../store/store';
 import { IDataResponse } from '../../../store/types-and-interfaces/article';
 import { deleteArticle } from '../../../store/slice/articleSlice';
@@ -36,11 +37,11 @@ export default function ArticleForm(article: IDataResponse) {
       });
   }
 
-  const user = useSelector((state: RootState) => state.user.user);
+  const user = useSelector((state: RootState) => state.user.user) as IProfileData | null;
 
   const authorName = author.username;
 
-  const isAuthor = user ? user.username === authorName : false;
+  const isAuthor = user?.username === authorName;
 
   const userAvatar = author.image;
 

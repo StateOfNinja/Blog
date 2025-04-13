@@ -10,7 +10,7 @@ import { RootState } from '../../store/store';
 import styles from './header.module.css';
 
 export default function Header() {
-  const user: IProfileData = useSelector((state: RootState) => state.user.user);
+  const user = useSelector((state: RootState) => state.user.user) as IProfileData | null;
 
   const avatar: string = user?.image ? user.image : 'https://static.productionready.io/images/smiley-cyrus.jpg';
 
