@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 
-import { token } from '../../../store/token';
 import { RootState } from '../../../store/store';
 import { TError } from '../../../store/types-and-interfaces/error';
 import { IProfileData, IProfileResponse } from '../../../store/types-and-interfaces/profile';
@@ -31,7 +30,7 @@ export default function EditProfileForm() {
 
   async function onSubmit(data: IProfileData) {
     try {
-      const response: IProfileResponse = await editProfileForm({ data, token }).unwrap();
+      const response: IProfileResponse = await editProfileForm({ data }).unwrap();
 
       const { username, email, image } = response.user;
 
@@ -39,7 +38,6 @@ export default function EditProfileForm() {
         setUser({
           username: username,
           email: email,
-          token: token,
           image: image,
         })
       );

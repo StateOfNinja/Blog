@@ -5,7 +5,6 @@ import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import ReactMarkdown from 'react-markdown';
 
-import { token } from '../../../store/token';
 import { IProfileData } from '../../../store/types-and-interfaces/profile';
 import { RootState } from '../../../store/store';
 import { IDataResponse } from '../../../store/types-and-interfaces/article';
@@ -26,7 +25,7 @@ export default function ArticleForm(article: IDataResponse) {
   const dispatch = useDispatch();
 
   function handleDeleteArticle() {
-    deleteArticleApi({ slug, token })
+    deleteArticleApi({ slug })
       .unwrap()
       .then(() => {
         dispatch(deleteArticle(slug));
@@ -52,7 +51,7 @@ export default function ArticleForm(article: IDataResponse) {
 
   async function toggleFavorite() {
     try {
-      await toggleFavoriteArticle({ slug, token, favorite: favorited }).unwrap();
+      await toggleFavoriteArticle({ slug, favorite: favorited }).unwrap();
     } catch (e) {
       console.log(e);
     }

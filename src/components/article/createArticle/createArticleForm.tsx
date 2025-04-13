@@ -3,7 +3,6 @@ import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
-import { token } from '../../../store/token';
 import { ICreatForm, IArticle } from '../../../store/types-and-interfaces/article';
 import { useCreateArticleMutation, useEditArticleMutation, useGetArticleQuery } from '../../../store/slice/apiSlice';
 import styles from '../../../style/form.module.css';
@@ -51,14 +50,14 @@ export default function CreateArticleForm() {
     };
 
     if (slug) {
-      await editArticle({ slug, token, data }).unwrap();
+      await editArticle({ slug, data }).unwrap();
     } else {
-      await createArticle({ data, token }).unwrap();
+      await createArticle({ data }).unwrap();
     }
     navigate('/articles');
   }
 
-  const { data: articleInfo } = useGetArticleQuery({ slug, token }, { skip: !slug });
+  const { data: articleInfo } = useGetArticleQuery({ slug }, { skip: !slug });
 
   useEffect(() => {
     if (articleInfo) {

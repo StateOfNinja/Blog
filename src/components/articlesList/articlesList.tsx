@@ -3,7 +3,6 @@ import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import ArticleForm from '../article/articleForm/articleForm';
-import { token } from '../../store/token';
 import { IArticle } from '../../store/types-and-interfaces/article';
 import { useGetArticlesQuery } from '../../store/slice/apiSlice';
 
@@ -16,7 +15,7 @@ export default function ArticlesList() {
   const limit = 5;
   const offset = (currentPage - 1) * limit;
 
-  const { data, isLoading, error, refetch } = useGetArticlesQuery({ limit, offset, token });
+  const { data, isLoading, error, refetch } = useGetArticlesQuery({ limit, offset });
 
   const articles: IArticle[] = data?.articles || [];
 
