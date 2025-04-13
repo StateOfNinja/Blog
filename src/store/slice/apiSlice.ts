@@ -43,7 +43,6 @@ const apiSlice = createApi({
         method: 'POST',
         body: { user: data },
       }),
-      invalidatesTags: ['Article', 'Articles'],
     }),
     editProfile: builder.mutation({
       query: ({ data }) => ({
@@ -51,6 +50,7 @@ const apiSlice = createApi({
         method: 'PUT',
         body: { user: data },
       }),
+      invalidatesTags: ['Article', 'Articles'],
     }),
     createArticle: builder.mutation({
       query: ({ data }) => ({
