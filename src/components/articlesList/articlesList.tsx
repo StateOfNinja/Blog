@@ -1,5 +1,6 @@
 import { Pagination, Spin, Alert } from 'antd';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 import ArticleForm from '../article/articleForm/articleForm';
 import { token } from '../../store/token';
@@ -9,7 +10,9 @@ import { useGetArticlesQuery } from '../../store/slice/apiSlice';
 import styles from './articlesList.module.css';
 
 export default function ArticlesList() {
-  const [currentPage, setCurrentPage] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentPage = Number(searchParams.get('page') || 1);
+
   const limit = 5;
   const offset = (currentPage - 1) * limit;
 
@@ -20,7 +23,8 @@ export default function ArticlesList() {
   const articlesCount: number = data?.articlesCount;
 
   function changePage(page: number): void {
-    setCurrentPage(page);
+    searchParams.set('page', page.toString());
+    setSearchParams(searchParams);
   }
 
   useEffect(() => {
@@ -36,7 +40,7 @@ export default function ArticlesList() {
   const pagination = !isLoading && (
     <Pagination
       align="center"
-      defaultCurrent={1}
+      defaultCurrent={currentPage}
       showSizeChanger={false}
       onChange={changePage}
       total={articlesCount * 2}

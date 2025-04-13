@@ -1,7 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+import { IArticle } from '../types-and-interfaces/article';
+
 const initialState = {
-  articles: [],
+  articles: <IArticle[]>[],
 };
 
 const articleSlice = createSlice({
