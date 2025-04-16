@@ -75,12 +75,12 @@ export default function CreateArticleForm() {
   const user = useSelector((state: RootState) => state.user.user) as IUser | null;
 
   useEffect(() => {
-    if (!slug || !articleInfo?.article) return;
+    if (!articleInfo) return;
 
     if (!user || user.username !== articleInfo.article.author.username) {
       navigate(`/articles/${slug}`);
     }
-  }, [slug, articleInfo, user]);
+  }, [articleInfo]);
 
   return (
     <div className={styles.pageForm}>
