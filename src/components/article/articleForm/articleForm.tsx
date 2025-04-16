@@ -1,5 +1,5 @@
 import { HeartOutlined, HeartFilled } from '@ant-design/icons';
-import { Button, Popconfirm } from 'antd';
+import { Button, Popconfirm, Tooltip } from 'antd';
 import { format } from 'date-fns';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -57,16 +57,27 @@ export default function ArticleForm(article: IDataResponse) {
     }
   }
 
+  const isAuth = useSelector((state: RootState) => state.user.user);
+
   return (
     <div className={`${styles.article} ${isArticlePage ? styles.full : ''}`}>
       <div className={styles.wrapper}>
         <div className={styles.content}>
           <div className={styles.title}>
             {isArticlePage ? title : <Link to={`/articles/${slug}`}>{title}</Link>}
-            <button className={styles.favorites} onClick={toggleFavorite}>
-              <span>{favorited ? <HeartFilled /> : <HeartOutlined />}</span>
-              <span className={styles.favoritesNumber}>{favoritesCount}</span>
-            </button>
+            {!isAuth ? (
+              <Tooltip title="Для оценки нужно авторизоваться" placement="right">
+                <button className={`${styles.favorites} ${styles.disabled}`} onClick={toggleFavorite} disabled>
+                  <span>{favorited ? <HeartFilled /> : <HeartOutlined />}</span>
+                  <span className={styles.favoritesNumber}>{favoritesCount}</span>
+                </button>
+              </Tooltip>
+            ) : (
+              <button className={styles.favorites} onClick={toggleFavorite}>
+                <span>{favorited ? <HeartFilled /> : <HeartOutlined />}</span>
+                <span className={styles.favoritesNumber}>{favoritesCount}</span>
+              </button>
+            )}
           </div>
           <ul className={styles.tags}>
             {tagList.map(
